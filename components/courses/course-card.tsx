@@ -1,74 +1,132 @@
-// components/courses/course-card.tsx
 import Link from "next/link";
-import { Star, Users, BookOpen, CheckCircle2 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import {
+  Star,
+  Users,
+  BookOpen,
+  CheckCircle2,
+} from "lucide-react";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { CATEGORY_COLORS, LEVEL_COLORS, getInitials, truncate } from "@/lib/utils";
-import type { CourseWithAuthorAndCounts } from "@/types";
+import {
+  CATEGORY_COLORS,
+  LEVEL_COLORS,
+  getInitials,
+  truncate,
+} from "@/lib/utils";
 
 interface CourseCardProps {
-  course: CourseWithAuthorAndCounts & { averageRating?: number; isEnrolled?: boolean };
+  course: {
+    id: string;
+    title: string;
+    description: string;
+    thumbnail?: string | null;
+    category: string;
+    level: string;
+    isEnrolled?: boolean;
+    averageRating?: number;
+    author: {
+      name?: string | null;
+      image?: string | null;
+    };
+    _count: {
+      lessons: number;
+      enrollments: number;
+      reviews: number;
+    };
+  };
   animationDelay?: number;
 }
 
-export function CourseCard({ course, animationDelay = 0 }: CourseCardProps) {
+export function CourseCard({
+  course,
+  animationDelay = 0,
+}: CourseCardProps) {
   return (
     <Link
       href={`/courses/${course.id}`}
-      className="forge-card flex flex-col overflow-hidden group animate-slide-up"
-      style={{ animationDelay: `${animationDelay}s`, opacity: 0, animationFillMode: "forwards" }}
+      className="forge-card group flex flex-col overflow-hidden animate-slide-up"
+      style={{
+        animationDelay: `${animationDelay}s`,
+        opacity: 0,
+        animationFillMode: "forwards",
+      }}
     >
       {/* Thumbnail */}
-      <div className="relative h-40 bg-gradient-to-br from-indigo-600/20 to-purple-600/10 overflow-hidden">
+      <div className="relative h-40 overflow-hidden bg-gradient-to-br from-indigo-600/20 to-purple-600/10">
         {course.thumbnail ? (
           <img
             src={course.thumbnail}
             alt={course.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center">
             <BookOpen className="h-12 w-12 text-indigo-500/30" />
           </div>
         )}
+
         {course.isEnrolled && (
-          <div className="absolute top-3 right-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-600/90 text-xs font-semibold text-white">
+          <div className="absolute right-3 top-3 flex items-center gap-1.5 rounded-full bg-emerald-600/90 px-2.5 py-1 text-xs font-semibold text-white">
             <CheckCircle2 className="h-3 w-3" />
             Enrolled
           </div>
         )}
+
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent" />
       </div>
 
       {/* Content */}
-      <div className="p-5 flex flex-col flex-1">
-        {/* Badges */}
-        <div className="flex items-center gap-2 mb-3 flex-wrap">
-          <span className={`inline-flex text-xs px-2 py-0.5 rounded-md border font-medium ${CATEGORY_COLORS[course.category] ?? ""}`}>
+      <div className="flex flex-1 flex-col p-5">
+        {/* Tags */}
+        <div className="mb-3 flex flex-wrap items-center gap-2">
+          <span
+            className={`inline-flex rounded-md border px-2 py-0.5 text-xs font-medium ${
+              CATEGORY_COLORS[
+                course.category as keyof typeof CATEGORY_COLORS
+              ] ?? ""
+            }`}
+          >
             {course.category.replace("_", " ")}
           </span>
-          <span className={`inline-flex text-xs px-2 py-0.5 rounded-md border font-medium ${LEVEL_COLORS[course.level] ?? ""}`}>
+
+          <span
+            className={`inline-flex rounded-md border px-2 py-0.5 text-xs font-medium ${
+              LEVEL_COLORS[
+                course.level as keyof typeof LEVEL_COLORS
+              ] ?? ""
+            }`}
+          >
             {course.level}
           </span>
         </div>
 
         {/* Title */}
-        <h3 className="text-sm font-bold text-white mb-2 leading-snug group-hover:text-indigo-300 transition-colors line-clamp-2">
+        <h3 className="mb-2 line-clamp-2 text-sm font-bold leading-snug text-white transition-colors group-hover:text-indigo-300">
           {course.title}
         </h3>
 
-        <p className="text-xs text-slate-500 leading-relaxed flex-1 line-clamp-2">
+        {/* Description */}
+        <p className="line-clamp-2 flex-1 text-xs leading-relaxed text-slate-500">
           {truncate(course.description, 100)}
         </p>
 
-        {/* Meta */}
-        <div className="mt-4 pt-4 border-t border-white/5 flex items-center justify-between">
+        {/* Footer */}
+        <div className="mt-4 flex items-center justify-between border-t border-white/5 pt-4">
           <div className="flex items-center gap-2">
             <Avatar className="h-5 w-5">
-              <AvatarImage src={course.author.image ?? ""} />
-              <AvatarFallback className="text-[9px]">{getInitials(course.author.name)}</AvatarFallback>
+              <AvatarImage
+                src={course.author.image ?? ""}
+              />
+              <AvatarFallback className="text-[9px]">
+                {getInitials(
+                  course.author.name ?? "U"
+                )}
+              </AvatarFallback>
             </Avatar>
-            <span className="text-xs text-slate-500 truncate max-w-[80px]">{course.author.name}</span>
+
+            <span className="max-w-[80px] truncate text-xs text-slate-500">
+              {course.author.name}
+            </span>
           </div>
 
           <div className="flex items-center gap-3 text-xs text-slate-500">
@@ -76,14 +134,19 @@ export function CourseCard({ course, animationDelay = 0 }: CourseCardProps) {
               <BookOpen className="h-3 w-3" />
               {course._count.lessons}
             </span>
+
             <span className="flex items-center gap-1">
               <Users className="h-3 w-3" />
               {course._count.enrollments}
             </span>
-            {course.averageRating && course.averageRating > 0 ? (
+
+            {course.averageRating &&
+            course.averageRating > 0 ? (
               <span className="flex items-center gap-1 text-amber-400">
                 <Star className="h-3 w-3 fill-current" />
-                {course.averageRating.toFixed(1)}
+                {course.averageRating.toFixed(
+                  1
+                )}
               </span>
             ) : null}
           </div>
