@@ -11,7 +11,8 @@
 
 ## 🚀 Live Demo
 
-**[https://eduforge.vercel.app](https://eduforge.vercel.app)** ← Replace with your deployment URL
+https://eduforge-3jkj-git-main-csprl1s-projects.vercel.app/
+
 
 ### Demo Credentials
 
