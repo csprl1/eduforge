@@ -6,7 +6,12 @@ import {
   CheckCircle2,
 } from "lucide-react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar";
+
 import {
   CATEGORY_COLORS,
   LEVEL_COLORS,
@@ -34,13 +39,18 @@ interface CourseCardProps {
       reviews: number;
     };
   };
+  isEnrolled?: boolean;
   animationDelay?: number;
 }
 
 export function CourseCard({
   course,
+  isEnrolled = false,
   animationDelay = 0,
 }: CourseCardProps) {
+  const enrolled =
+    isEnrolled || course.isEnrolled;
+
   return (
     <Link
       href={`/courses/${course.id}`}
@@ -65,7 +75,7 @@ export function CourseCard({
           </div>
         )}
 
-        {course.isEnrolled && (
+        {enrolled && (
           <div className="absolute right-3 top-3 flex items-center gap-1.5 rounded-full bg-emerald-600/90 px-2.5 py-1 text-xs font-semibold text-white">
             <CheckCircle2 className="h-3 w-3" />
             Enrolled
@@ -77,7 +87,6 @@ export function CourseCard({
 
       {/* Content */}
       <div className="flex flex-1 flex-col p-5">
-        {/* Tags */}
         <div className="mb-3 flex flex-wrap items-center gap-2">
           <span
             className={`inline-flex rounded-md border px-2 py-0.5 text-xs font-medium ${
@@ -100,17 +109,14 @@ export function CourseCard({
           </span>
         </div>
 
-        {/* Title */}
         <h3 className="mb-2 line-clamp-2 text-sm font-bold leading-snug text-white transition-colors group-hover:text-indigo-300">
           {course.title}
         </h3>
 
-        {/* Description */}
         <p className="line-clamp-2 flex-1 text-xs leading-relaxed text-slate-500">
           {truncate(course.description, 100)}
         </p>
 
-        {/* Footer */}
         <div className="mt-4 flex items-center justify-between border-t border-white/5 pt-4">
           <div className="flex items-center gap-2">
             <Avatar className="h-5 w-5">

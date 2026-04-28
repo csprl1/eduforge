@@ -17,7 +17,9 @@ export type CourseWithAuthorAndCounts = Course & {
   };
   lessons?: Lesson[];
   enrollments?: Enrollment[];
+  reviews?: Review[];
   averageRating?: number;
+  isEnrolled?: boolean;
 };
 
 export type LessonWithProgress = Lesson & {
